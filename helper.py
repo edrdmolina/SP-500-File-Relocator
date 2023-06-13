@@ -31,7 +31,7 @@ class NewDirHandler(FileSystemEventHandler):
             temp_dir = f"{self.temp_directory}/{roll_dir_name}"
             new_dir = f"{self.target_directory}/{roll_dir_name}"
 
-            print("Found new dir, will wait 10 secs to move to weekly folder")
+            print("Found new directory, please wait while files are processed and moved to the server.")
             # Wait to allow for images to be exported in dir
             if self.is_large_export:
                 time.sleep(35)
@@ -43,12 +43,17 @@ class NewDirHandler(FileSystemEventHandler):
             delete_original_export(temp_dir)
 
             print(f"Completed export of: {roll_dir_name} >:)")
-            self.roll_number = input("If same order, input next roll number | if not hit -1 then 'Enter': ").strip()
+            print("On the next line hit 'Enter' for sequential roll number, different roll number, or 'N' to start a "
+                  "new order")
+            next_roll = input("").strip().upper()
 
-            if self.roll_number != "-1":
-                print(f"\nWatching out for roll number: {self.roll_number} from scanner...")
-            elif self.roll_number == "-1":
+            if next_roll == "":
+                prev_roll = int(self.roll_number)
+                self.roll_number = prev_roll + 1
+            elif next_roll == "N":
                 self.observe = False
+            else:
+                self.roll_number = next_roll
 
         
 def clear():
